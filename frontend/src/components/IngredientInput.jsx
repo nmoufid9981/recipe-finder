@@ -1,64 +1,93 @@
 import { useState } from "react";
 
-export default function IngredientInput() {
+export default function IngredientInput({ onChange }) {
   const [input, setInput] = useState("");
   const [ingredients, setIngredients] = useState([]);
 
-  // ➕ Ajouter ingrédient
   const addIngredient = () => {
-    if (!input.trim()) return;
+    const value = input.trim().toLowerCase();
+    if (!value) return;
 
-    setIngredients([...ingredients, input]);
+    // empêcher doublons
+    if (ingredients.includes(value)) {
+      setInput("");
+      return;
+    }
+
+    const updated = [...ingredients, value];
+    setIngredients(updated);
+    onChange(updated);
     setInput("");
   };
 
-  // ❌ Supprimer ingrédient
-  const removeIngredient = (indexToRemove) => {
-    setIngredients(
-      ingredients.filter((_, index) => index !== indexToRemove)
-    );
+  const removeIngredient = (index) => {
+    const updated = ingredients.filter((_, i) => i !== index);
+    setIngredients(updated);
+    onChange(updated);
+  };
+
+  const clearAll = () => {
+    setIngredients([]);
+    onChange([]);
   };
 
   return (
-    <div className="max-w-xl mx-auto">
+  <div className="max-w-xl mx-auto">
 
-      {/* INPUT */}
-      <div className="flex gap-2">
-        <input
-          className="flex-1 border rounded-full px-4 py-2"
-          placeholder="Ex: tomato, chicken..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
+    {/* INPUT CARD */}
+    <div className="bg-white p-4 rounded-2xl shadow flex gap-2">
 
-        <button
-          onClick={addIngredient}
-          className="bg-orange-500 text-white px-5 py-2 rounded-full"
-        >
-          Add
-        </button>
-      </div>
+      <input
+            className="flex-1 outline-none px-3"
+            placeholder="Ex: tomato, chicken..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
 
-      {/* LISTE INGREDIENTS */}
-      <div className="flex flex-wrap gap-2 mt-3">
-        {ingredients.map((item, index) => (
-          <div
-            key={index}
-            className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-          >
-            <span>{item}</span>
-
-            {/* bouton delete */}
-            <button
-              onClick={() => removeIngredient(index)}
-              className="text-red-500 font-bold hover:text-red-700"
-            >
-              ✕
-            </button>
-          </div>
-        ))}
-      </div>
+            // 🔥 AJOUT ICI
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addIngredient();
+              }
+            }}
+      />
+      <button
+        onClick={addIngredient}
+        className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl transition"
+      >
+        Add
+      </button>
 
     </div>
-  );
+
+    {/* TAGS */}
+    <div className="flex flex-wrap gap-2 mt-4 justify-center">
+      {ingredients.map((item, index) => (
+        <div
+          key={index}
+          className="bg-orange-50 text-orange-600 px-4 py-1 rounded-full flex items-center gap-2 shadow-sm"
+        >
+          {item}
+          <button
+            onClick={() => removeIngredient(index)}
+            className="text-red-400 hover:text-red-600"
+          >
+            ✕
+          </button>
+        </div>
+      ))}
+    </div>
+
+    {/* CLEAR */}
+    {ingredients.length > 0 && (
+      <p
+        onClick={clearAll}
+        className="text-center text-sm text-gray-400 mt-3 cursor-pointer hover:text-red-500"
+      >
+        Clear all
+      </p>
+    )}
+
+  </div>
+);
 }

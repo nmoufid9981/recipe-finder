@@ -1,8 +1,17 @@
+import { useState } from "react";
 import IngredientInput from "../components/IngredientInput";
 import RecipeCard from "../components/RecipeCard";
 import { recipes } from "../data/recipes";
 
 export default function Home() {
+  const [ingredients, setIngredients] = useState([]);
+
+  const filteredRecipes = recipes.filter((recipe) =>
+    ingredients.every((ing) =>
+      recipe.ingredients.includes(ing)
+    )
+  );
+
   return (
     <div className="px-6 py-10">
 
@@ -16,14 +25,28 @@ export default function Home() {
         </p>
       </div>
 
-      {/* INPUT INGREDIENTS */}
-      <IngredientInput />
+      {/* INPUT */}
+      <IngredientInput onChange={setIngredients} />
 
-      {/* RECIPES */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
-        {recipes.map((r) => (
-          <RecipeCard key={r.id} recipe={r} />
-        ))}
+      {/* RESULT */}
+      <div className="mt-10">
+
+        {ingredients.length === 0 ? (
+          <p className="text-center text-gray-500">
+            Aucun ingrédient ajouté. Commencez à taper ci-dessus pour ajouter des ingrédients.
+          </p>
+        ) : filteredRecipes.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredRecipes.map((r) => (
+              <RecipeCard key={r.id} recipe={r} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">
+            Aucune recette trouvée avec ces ingrédients.
+          </p>
+        )}
+
       </div>
 
     </div>
