@@ -1,32 +1,11 @@
-import React, { useEffect, useState } from 'react' // Ajout de React ici
-import axios from 'axios'
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 
-function App() {
-  const [message, setMessage] = useState("En attente du backend...")
-
-  useEffect(() => {
-    // On ajoute un log pour voir si l'appel est lancé
-    console.log("Appel au backend lancé...");
-    
-    axios.get('http://localhost:8081/api/hello')
-      .then(res => {
-        console.log("Réponse reçue :", res.data);
-        setMessage(res.data);
-      })
-      .catch(err => {
-        console.error("Détails de l'erreur :", err);
-        setMessage("Erreur de connexion !");
-      });
-  }, [])
-
+export default function App() {
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Test de Liaison</h1>
-      <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '10px' }}>
-        <strong>Statut : </strong> {message}
-      </div>
+    <div className="bg-gray-50 min-h-screen">
+      <Navbar />
+      <Home />
     </div>
-  )
+  );
 }
-
-export default App; // Vérifie bien que cette ligne est présente !
