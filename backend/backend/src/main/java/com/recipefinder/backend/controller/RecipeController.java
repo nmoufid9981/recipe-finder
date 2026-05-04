@@ -8,25 +8,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Arrays;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/recipes")
-@CrossOrigin(origins = "http://localhost:5173") // React
+@CrossOrigin(origins = "http://localhost:5173")
 public class RecipeController {
 
     @Autowired
     private RecipeService service;
 
+    // 📦 GET ALL RECIPES
     @GetMapping
     public List<Recipe> getAll() {
         return service.getAllRecipes();
     }
 
+    // 🔍 SEARCH BY INGREDIENTS
     @GetMapping("/search")
-public List<Recipe> search(@RequestParam String ingredients) {
-    List<String> list = Arrays.asList(ingredients.split(","));
-    return service.findRecipesByIngredients(list);
-}
+    public List<Recipe> search(@RequestParam String ingredients) {
+
+        List<String> list = Arrays.asList(ingredients.split(","));
+
+        return service.findRecipesByIngredients(list);
+    }
 }
