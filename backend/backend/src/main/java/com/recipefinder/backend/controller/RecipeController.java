@@ -6,12 +6,14 @@ import com.recipefinder.backend.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/recipes")
-@CrossOrigin(origins = "http://localhost:3000") // React
+@CrossOrigin(origins = "http://localhost:5173") // React
 public class RecipeController {
 
     @Autowired
@@ -22,8 +24,9 @@ public class RecipeController {
         return service.getAllRecipes();
     }
 
-    @PostMapping("/search")
-    public List<Map<String, Object>> search(@RequestBody List<String> ingredients) {
-        return service.findRecipesByIngredients(ingredients);
-    }
+    @GetMapping("/search")
+public List<Recipe> search(@RequestParam String ingredients) {
+    List<String> list = Arrays.asList(ingredients.split(","));
+    return service.findRecipesByIngredients(list);
+}
 }
