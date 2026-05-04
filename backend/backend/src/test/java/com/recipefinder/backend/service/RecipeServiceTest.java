@@ -4,6 +4,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,12 +38,11 @@ class RecipeServiceTest {
         // Act
         List<String> userIngredients = List.of("chicken", "pasta");
 
-        var result = service.findRecipesByIngredients(userIngredients);
+        List<Recipe> result = service.findRecipesByIngredients(userIngredients);
 
         // Assert
         assertEquals(1, result.size());
-
-        assertEquals("Chicken Pasta", result.get(0).get("title"));
-        assertTrue((int) result.get(0).get("match") > 0);
+        assertEquals("Chicken Pasta", result.get(0).getTitle());
+        assertTrue(result.get(0).getIngredients().contains("chicken"));
     }
 }
