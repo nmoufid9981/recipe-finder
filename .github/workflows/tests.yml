@@ -1,4 +1,4 @@
-name: Spring Boot Tests
+name: Spring Boot CI
 
 on:
   push:
@@ -19,7 +19,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
 
-      - name: Run Maven tests
+      - name: Build & Test with Maven
         working-directory: ./backend/backend
-        run: mvn clean test
+        run: mvn clean verify
