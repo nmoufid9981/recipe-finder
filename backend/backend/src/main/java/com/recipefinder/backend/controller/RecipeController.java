@@ -1,13 +1,14 @@
 package com.recipefinder.backend.controller;
 
-import com.recipefinder.backend.model.Recipe;
-import com.recipefinder.backend.service.RecipeService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.recipefinder.backend.model.Recipe;
+import com.recipefinder.backend.service.RecipeService;
 
 @RestController
 @RequestMapping("/recipes")
@@ -30,5 +31,13 @@ public class RecipeController {
         List<String> list = Arrays.asList(ingredients.split(","));
 
         return service.findRecipesByIngredients(list);
+    }
+
+    // 🔥 GET RECIPE BY ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getById(@PathVariable Long id) {
+        return service.getRecipeById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -1,6 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 export default function RecipeCard({ recipe }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition overflow-hidden">
+    <div
+      onClick={() => navigate(`/recipes/${recipe.id}`)}
+      className="cursor-pointer bg-white rounded-2xl shadow-sm hover:shadow-xl hover:scale-105 transition overflow-hidden"
+    >
 
       {/* IMAGE */}
       <div className="relative">
@@ -10,20 +17,16 @@ export default function RecipeCard({ recipe }) {
           alt={recipe.title}
         />
 
-        {/* overlay */}
         <div className="absolute inset-0 bg-black/30"></div>
 
-        {/* difficulty */}
         <span className="absolute top-3 left-3 bg-white text-sm px-3 py-1 rounded-full">
           {recipe.level}
         </span>
 
-        {/* match */}
         <span className="absolute top-3 right-3 bg-white text-sm px-3 py-1 rounded-full border">
           {recipe.match}% match
         </span>
 
-        {/* rating */}
         <span className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full text-sm">
           ⭐ {recipe.rating}
         </span>
@@ -40,19 +43,16 @@ export default function RecipeCard({ recipe }) {
           {recipe.description}
         </p>
 
-        {/* infos */}
         <div className="flex gap-4 text-sm text-gray-500 mt-3">
           <span>⏱ {recipe.time}</span>
           <span>👥 {recipe.people}</span>
           <span>🍽 {recipe.type}</span>
         </div>
 
-        {/* missing ingredients */}
         <div className="mt-4 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm">
           Il vous manque {recipe.missing} ingrédients
         </div>
 
-        {/* tags */}
         <div className="flex gap-2 mt-3 flex-wrap">
           {recipe.tags.map((tag, i) => (
             <span

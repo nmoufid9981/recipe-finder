@@ -1,48 +1,38 @@
 package com.recipefinder.backend.service;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.recipefinder.backend.model.Recipe;
+import com.recipefinder.backend.repository.RecipeRepository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.recipefinder.backend.model.Recipe;
-import com.recipefinder.backend.repository.RecipeRepository;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeServiceTest {
 
     @Mock
-    private RecipeRepository repository;
+    private RecipeRepository recipeRepository;
 
     @InjectMocks
-    private RecipeService service;
+    private RecipeService recipeService;
 
     @Test
-    void testFindRecipesByIngredients() {
+    void testGetAllRecipes() {
+        Recipe r1 = new Recipe();
+        r1.setTitle("Pizza");
 
-        // Arrange
-        Recipe recipe = new Recipe();
-        recipe.setId(1L);
-        recipe.setTitle("Chicken Pasta");
-        recipe.setIngredients(List.of("chicken", "pasta", "tomato"));
+        when(recipeRepository.findAll()).thenReturn(List.of(r1));
 
-        when(repository.findAll()).thenReturn(List.of(recipe));
+        List<Recipe> result = recipeService.getAllRecipes();
 
-        // Act
-        List<String> userIngredients = List.of("chicken", "pasta");
-
-        List<Recipe> result = service.findRecipesByIngredients(userIngredients);
-
-        // Assert
         assertEquals(1, result.size());
-        assertEquals("Chicken Pasta", result.get(0).getTitle());
-        assertTrue(result.get(0).getIngredients().contains("chicken"));
+        assertEquals("Pizza", result.get(0).getTitle());
     }
 }

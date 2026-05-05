@@ -1,7 +1,7 @@
 package com.recipefinder.backend.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,18 +20,26 @@ public class RecipeService {
 
         List<String> normalizedInput = userIngredients.stream()
                 .map(String::toLowerCase)
-                .collect(Collectors.toList());
+                .toList();
 
         return repository.findAll().stream()
                 .filter(recipe -> recipe.getIngredients() != null
-                        && recipe.getIngredients().stream()
-                            .map(String::toLowerCase)
-                            .anyMatch(normalizedInput::contains))
-                .collect(Collectors.toList());
+                        && normalizedInput.stream().allMatch(input ->
+                            recipe.getIngredients().stream()
+                                .map(String::toLowerCase)
+                                .anyMatch(ing -> ing.contains(input))
+                        )
+                )
+                .toList();
     }
 
     // 📦 GET ALL RECIPES
     public List<Recipe> getAllRecipes() {
         return repository.findAll();
+    }
+
+    // 🔥 GET BY ID
+    public Optional<Recipe> getRecipeById(Long id) {
+        return repository.findById(id);
     }
 }
