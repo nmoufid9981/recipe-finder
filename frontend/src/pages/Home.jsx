@@ -1,69 +1,83 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import IngredientInput from "../components/IngredientInput";
 import RecipeCard from "../components/RecipeCard";
+import { searchRecipes } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Home() {
-  const [ingredients, setIngredients] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // 🔥 CALL BACKEND
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) navigate("/");
+  }, []);
+
   const handleSearch = async (ings) => {
-    if (!ings || ings.length === 0) {
+    if (!ings.length) {
       setRecipes([]);
       return;
     }
 
-    const query = ings.join(",");
+    setLoading(true);
 
-    try {
-      const res = await fetch(
-        `http://localhost:8082/recipes/search?ingredients=${query}`
-      );
+    const data = await searchRecipes(ings);
 
-      if (!res.ok) {
-        throw new Error("Erreur backend");
-      }
-
-      const data = await res.json();
-      setRecipes(data);
-    } catch (error) {
-      console.error("Erreur fetch:", error);
-      setRecipes([]);
-    }
+    setRecipes(data);
+    setLoading(false);
   };
 
   return (
-    <div className="px-6 py-10">
+  <motion.div
+    className="px-6 py-10 min-h-screen flex flex-col"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+  >
 
-      {/* TITLE */}
-      <h2 className="text-3xl font-bold text-center mb-8">
-        Qu'avez-vous dans votre cuisine ?
+    {/* HEADER */}
+    <div className="text-center mt-6">
+      <h2 className="text-3xl font-bold">
+        👋 What’s in your kitchen today?
       </h2>
 
-      {/* INPUT INGREDIENTS */}
-      <IngredientInput
-        onChange={(ings) => {
-          setIngredients(ings);   // stock local
-          handleSearch(ings);     // appel backend
-        }}
-      />
-
-      {/* RESULTS */}
-      <div className="mt-10">
-
-        {recipes.length === 0 ? (
-          <p className="text-center text-gray-500">
-            Aucune recette trouvée
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {recipes.map((r) => (
-              <RecipeCard key={r.id} recipe={r} />
-            ))}
-          </div>
-        )}
-
-      </div>
+      <p className="text-gray-500 mt-2">
+        Turn your ingredients into something delicious 🍝✨
+      </p>
     </div>
-  );
-}
+
+    {/* INPUT SECTION (plus bas + stylé) */}
+    <div className="mt-16 max-w-2xl mx-auto w-full">
+      <IngredientInput onChange={handleSearch} />
+    </div>
+
+    {/* RESULTS */}
+    <div className="mt-12 flex-1">
+
+      {loading && (
+        <p className="text-center text-gray-500">
+          Cooking ideas for you... 👨‍🍳
+        </p>
+      )}
+
+      {!loading && recipes.length === 0 ? (
+        <div className="text-center text-gray-500 mt-10 space-y-2">
+          <p>Start by adding ingredients 🥕🥬🍗</p>
+          <p className="text-sm">
+            Example: chicken, pasta, tomato
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-6">
+          {recipes.map((r) => (
+            <RecipeCard key={r.id} recipe={r} />
+          ))}
+        </div>
+      )}
+
+    </div>
+
+  </motion.div>
+  );}
