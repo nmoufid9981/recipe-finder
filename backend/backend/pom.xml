@@ -27,7 +27,11 @@
 
     <!-- DEPENDENCIES -->
     <dependencies>
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- API REST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
