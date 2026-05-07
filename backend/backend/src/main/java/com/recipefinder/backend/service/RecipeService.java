@@ -18,20 +18,29 @@ public class RecipeService {
     // 🔍 SEARCH BY INGREDIENTS
     public List<Recipe> findRecipesByIngredients(List<String> userIngredients) {
 
-        List<String> normalizedInput = userIngredients.stream()
-                .map(String::toLowerCase)
-                .toList();
+    List<String> normalizedInput = userIngredients.stream()
+            .map(String::toLowerCase)
+            .map(String::trim)
+            .toList();
 
-        return repository.findAll().stream()
-                .filter(recipe -> recipe.getIngredients() != null
-                        && normalizedInput.stream().allMatch(input ->
-                            recipe.getIngredients().stream()
-                                .map(String::toLowerCase)
-                                .anyMatch(ing -> ing.contains(input))
-                        )
-                )
-                .toList();
-    }
+    return repository.findAll().stream()
+            .filter(recipe -> {
+                if (recipe.getIngredients() == null) return false;
+
+                List<String> recipeIngredients = recipe.getIngredients().stream()
+                        .map(String::toLowerCase)
+                        .map(String::trim)
+                        .toList();
+
+                // 👉 au moins 1 match suffit
+                return normalizedInput.stream()
+                        .anyMatch(input ->
+                                recipeIngredients.stream()
+                                        .anyMatch(ing -> ing.contains(input))
+                        );
+            })
+            .toList();
+}
 
     // 📦 GET ALL RECIPES
     public List<Recipe> getAllRecipes() {

@@ -1,21 +1,34 @@
 const API_BASE = "http://localhost:8082";
 
 // 🔎 Search recipes
-export const searchRecipes = (ingredients) => {
-  return fetch(
-    `${API_BASE}/recipes/search?ingredients=${ingredients.join(",")}`
-  ).then(res => res.json());
+export const searchRecipes = (ingredients = []) => {
+  const query = Array.isArray(ingredients)
+    ? ingredients.join(",")
+    : ingredients;
+
+  return fetch(`${API_BASE}/recipes/search?ingredients=${encodeURIComponent(query)}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Search failed");
+      return res.json();
+    });
 };
 
 // 📋 Get all recipes
 export const getAllRecipes = () => {
-  return fetch(`${API_BASE}/recipes`).then(res => res.json());
+  return fetch(`${API_BASE}/recipes`)
+    .then(res => {
+      if (!res.ok) throw new Error("Fetch recipes failed");
+      return res.json();
+    });
 };
 
-// 🔍 Get recipe by ID (IMPORTANT - AJOUTÉ)
+// 🔍 Get recipe by ID
 export const getRecipeById = (id) => {
   return fetch(`${API_BASE}/recipes/${id}`)
-    .then(res => res.json());
+    .then(res => {
+      if (!res.ok) throw new Error("Recipe not found");
+      return res.json();
+    });
 };
 
 // 👤 Register
@@ -26,7 +39,10 @@ export const registerUser = (userData) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(userData)
-  }).then(res => res.json());
+  }).then(res => {
+    if (!res.ok) throw new Error("Register failed");
+    return res.json();
+  });
 };
 
 // 🔐 Login
@@ -37,5 +53,8 @@ export const loginUser = (loginData) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(loginData)
-  }).then(res => res.json());
+  }).then(res => {
+    if (!res.ok) throw new Error("Login failed");
+    return res.json();
+  });
 };
