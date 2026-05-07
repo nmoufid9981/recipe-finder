@@ -18,6 +18,12 @@ public class RecipeController {
     @Autowired
     private RecipeService service;
 
+    @GetMapping("/debug/db")
+    public ResponseEntity<String> debugDb() {
+        return ResponseEntity.ok(
+            "Recipes count: " + service.getAllRecipes().size()
+        );
+    }
     // 📦 GET ALL RECIPES
     @GetMapping
     public List<Recipe> getAll() {
@@ -28,12 +34,19 @@ public class RecipeController {
     @GetMapping("/search")
     public List<Recipe> search(@RequestParam String ingredients) {
 
-        List<String> list = Arrays.asList(ingredients.split(","));
+        if (ingredients == null || ingredients.isEmpty()) {
+            return List.of();
+        }
+
+        List<String> list = Arrays.stream(ingredients.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
 
         return service.findRecipesByIngredients(list);
     }
 
-    // 🔥 GET RECIPE BY ID
+    // 🔥 GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Recipe> getById(@PathVariable Long id) {
         return service.getRecipeById(id)
