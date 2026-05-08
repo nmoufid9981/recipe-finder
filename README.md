@@ -1,30 +1,71 @@
+
+<div align="center">
+
 # 🍽️ What2Cook
 
-What2Cook est une application web full stack qui permet de trouver des idées de recettes à partir d’ingrédients disponibles.
+<img src="https://img.shields.io/badge/Full%20Stack-Project-blueviolet?style=for-the-badge" />
+<img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react" />
+<img src="https://img.shields.io/badge/Spring%20Boot-Backend-6DB33F?style=for-the-badge&logo=springboot" />
+<img src="https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwindcss" />
 
 ---
 
-## ⚙️ Stack
+###  *“What can I cook with what I have?”*
 
-- Frontend : React + Tailwind CSS  
-- Backend : Spring Boot (REST API)  
-- DB : MySQL / PostgreSQL  
-- Outils : Git, GitHub, Postman  
+</div>
 
 ---
 
-## ✨ Fonctionnalités
+##  About the project
 
-- 🔍 Recherche de recettes par ingrédients  
-- 🍲 Liste des recettes  
-- 📄 Détails d’une recette  
-- ⭐ Favoris utilisateur  
-- 👤 Authentification  
+**What2Cook** is a full stack web application that helps users find recipe ideas based on available ingredients.
+
+The goal is to:
+- simplify daily cooking decisions  
+- reduce food waste  
+- provide fast and relevant recipe suggestions  
 
 ---
 
-## 🚀 Lancer le projet
+##  Tech Stack
+
+### 🎨 Frontend
+- React  
+- Tailwind CSS  
+- React Router  
+- Axios  
 
 ### Backend
-```bash
-mvn spring-boot:run
+- Spring Boot  
+- Spring Data JPA  
+- REST API  
+
+###  Database
+- MySQL / PostgreSQL  
+
+###  Tools
+- Git & GitHub  
+- Postman  
+- Maven  
+- Node.js  
+
+---
+
+##  Features
+
+-  Search recipes by ingredients  
+-  Display recipe list  
+-  View detailed recipe (ingredients + steps)  
+-  Add / remove favorites  
+-  User authentication (login / register)  
+
+---
+
+##  API Endpoints
+
+```http id="api-endpoints"
+GET    /recipes
+GET    /recipes/{id}
+GET    /recipes/search?ingredients=
+POST   /register
+POST   /login
