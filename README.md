@@ -1,34 +1,30 @@
-🍽️ What2Cook
-###############################################################################################################
-What2Cook est une application web full stack qui permet de trouver des idées de recettes à partir d’ingrédients disponibles.
-###################################################################################################################
-⚙️ Stack
--Frontend : React + Tailwind CSS
--Backend : Spring Boot (REST API)
--Database : MySQL / PostgreSQL
--Outils : Git, GitHub, Postman
-#####################################################################################################################
-✨ Fonctionnalités
--🔍 Recherche de recettes par ingrédients
--🍲 Liste des recettes
--📄 Détails d’une recette (ingrédients + étapes)
--⭐ Gestion des favoris
--👤 Authentification (login / register)
-#####################################################################################################################
-🧠 API principale
--GET    /recipes
--GET    /recipes/{id}
--GET    /recipes/search?ingredients=
--POST   /login
--POST   /register
-#########################################################################################################################
-🚀 Lancer le projet
-Backend
-mvn spring-boot:run
-Frontend
-npm install
-npm run dev
-###########################################################################################################################
-🎯 Objectif
+# 🍽️ What2Cook
 
-Simplifier la question : “Qu’est-ce que je peux cuisiner maintenant ?”
+What2Cook est une application web full stack qui permet de trouver des idées de recettes à partir d’ingrédients disponibles.
+
+---
+
+## ⚙️ Stack
+
+- Frontend : React + Tailwind CSS  
+- Backend : Spring Boot (REST API)  
+- DB : MySQL / PostgreSQL  
+- Outils : Git, GitHub, Postman  
+
+---
+
+## ✨ Fonctionnalités
+
+- 🔍 Recherche de recettes par ingrédients  
+- 🍲 Liste des recettes  
+- 📄 Détails d’une recette  
+- ⭐ Favoris utilisateur  
+- 👤 Authentification  
+
+---
+
+## 🚀 Lancer le projet
+
+### Backend
+```bash
+mvn spring-boot:run
