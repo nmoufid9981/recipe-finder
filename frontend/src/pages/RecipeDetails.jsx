@@ -1,132 +1,210 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function RecipeDetails() {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const recipeFromState = location.state?.recipe;
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const normalizeRecipe = (data) => ({
+    id: data.id || data.recipeId || data.idMeal,
+    name: data.title || data.name || data.strMeal,
+    image: data.image || data.strMealThumb,
+    description: data.description || "",
+    level: data.level || "Easy",
+    rating: data.rating || "4.8",
+    time: data.time || "30 min",
+    people: data.people || "2",
+    type: data.type || "Main dish",
+    tags: data.tags || [],
+    ingredients: data.ingredients || [],
+    instructions:
+        data.instructions ||
+        data.strInstructions ||
+        data.description ||
+        "No instructions available",
+
+  });
+
   useEffect(() => {
-    fetch(`http://localhost:8082/recipes/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("404");
-        return res.json();
-      })
-      .then((data) => setRecipe(data))
-      .catch(() => setError("Recette non trouvée"))
-      .finally(() => setLoading(false));
-  }, [id]);
+    const fetchRecipe = async () => {
+      setLoading(true);
+      setError(null);
 
-  if (loading)
-    return <p className="text-center mt-10 text-gray-500">Chargement...</p>;
+      if (!id) {
+        setError("ID invalide");
+        setLoading(false);
+        return;
+      }
 
-  if (error)
-    return <p className="text-center text-red-500 mt-10">{error}</p>;
+      if (recipeFromState) {
+        setRecipe(normalizeRecipe(recipeFromState));
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:8082/recipes/${id}`);
+
+        if (!res.ok) {
+          throw new Error("Recette introuvable");
+        }
+
+        const data = await res.json();
+        setRecipe(normalizeRecipe(data));
+      } catch (err) {
+        console.error(err);
+        setError("Recette non trouvée");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipe();
+  }, [id, recipeFromState]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#fff8f0] flex items-center justify-center">
+        <p className="text-orange-500 font-semibold text-lg">Chargement...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#fff8f0] flex items-center justify-center px-6">
+        <div className="bg-white rounded-2xl shadow-lg p-8 text-center max-w-md">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            Recette introuvable
+          </h2>
+          <p className="text-gray-500 mb-6">{error}</p>
+          <button
+            onClick={() => navigate("/home")}
+            className="bg-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition"
+          >
+            Retour aux recettes
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!recipe) return null;
 
   return (
-    <div className="bg-gray-50 min-h-screen py-8 px-4">
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden">
+    <div className="min-h-screen bg-[#fff8f0] pb-12">
+      <div className="relative h-[420px] w-full overflow-hidden">
+        <img
+          src={recipe.image}
+          alt={recipe.name}
+          className="w-full h-full object-cover"
+        />
 
-        {/* IMAGE HEADER */}
-        <div className="relative h-72 md:h-96">
-          <img
-            src={recipe.image}
-            alt={recipe.name}
-            className="w-full h-full object-cover"
-          />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
 
-          {/* overlays like your card */}
-          <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-sm shadow">
-            {recipe.difficulty || "Easy"}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 bg-white/90 text-gray-900 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-white transition"
+        >
+          Back
+        </button>
+
+        <div className="absolute bottom-8 left-6 right-6 max-w-5xl mx-auto">
+          <div className="flex flex-wrap gap-3 mb-4">
+            <span className="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+              {recipe.level}
+            </span>
+            <span className="bg-white text-gray-900 px-4 py-2 rounded-full text-sm font-semibold">
+              {recipe.type}
+            </span>
           </div>
 
-          <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm shadow">
-            {recipe.match || "85% match"}
-          </div>
-
-          <div className="absolute bottom-4 left-4 bg-white px-3 py-1 rounded-full text-sm shadow flex items-center gap-1">
-            ⭐ {recipe.rating || "4.5"}
-          </div>
-        </div>
-
-        {/* CONTENT */}
-        <div className="p-6 md:p-10">
-
-          {/* TITLE */}
-          <h1 className="text-3xl font-bold text-orange-500 mb-2">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
             {recipe.name}
           </h1>
 
-          <p className="text-gray-500 mb-6">
-            {recipe.description || "Delicious recipe made with love"}
+          <p className="text-white/85 mt-4 max-w-2xl text-base md:text-lg">
+            {recipe.description}
           </p>
+        </div>
+      </div>
 
-          {/* INFO ROW */}
-          <div className="flex flex-wrap gap-4 text-gray-600 mb-6">
-            <div className="flex items-center gap-2">
-              ⏱ <span>30 min</span>
-            </div>
-            <div className="flex items-center gap-2">
-              👥 <span>2 persons</span>
-            </div>
-            <div className="flex items-center gap-2">
-              🍽 <span>Dinner</span>
-            </div>
+      <div className="max-w-5xl mx-auto px-6 -mt-8 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+            <p className="text-gray-400 text-sm">Rating</p>
+            <p className="text-xl font-bold text-gray-900">{recipe.rating}</p>
           </div>
 
-          {/* MAIN GRID */}
-          <div className="grid md:grid-cols-2 gap-8">
-
-            {/* INGREDIENTS */}
-            <div>
-              <h2 className="text-xl font-semibold mb-3">
-                🥕 Ingredients
-              </h2>
-
-              <div className="bg-orange-50 p-4 rounded-2xl space-y-2">
-                {Array.isArray(recipe.ingredients)
-                  ? recipe.ingredients.map((ing, i) => (
-                      <div
-                        key={i}
-                        className="bg-white px-3 py-2 rounded-lg shadow-sm"
-                      >
-                        {ing}
-                      </div>
-                    ))
-                  : <p>{recipe.ingredients}</p>}
-              </div>
-
-              {/* missing ingredients like your card */}
-              <div className="mt-4 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm inline-block">
-                ⚠️ Il vous manque ingrédients
-              </div>
-            </div>
-
-            {/* INSTRUCTIONS */}
-            <div>
-              <h2 className="text-xl font-semibold mb-3">
-                👨‍🍳 Instructions
-              </h2>
-
-              <div className="bg-gray-50 p-4 rounded-2xl space-y-3 leading-relaxed text-gray-700">
-                {recipe.instructions}
-              </div>
-            </div>
-
+          <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+            <p className="text-gray-400 text-sm">Time</p>
+            <p className="text-xl font-bold text-gray-900">{recipe.time}</p>
           </div>
 
-          {/* TAGS */}
-          <div className="mt-8 flex gap-2 flex-wrap">
-            <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
-              quick
-            </span>
-            <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
-              healthy
-            </span>
+          <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+            <p className="text-gray-400 text-sm">Servings</p>
+            <p className="text-xl font-bold text-gray-900">{recipe.people}</p>
           </div>
 
+          <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+            <p className="text-gray-400 text-sm">Level</p>
+            <p className="text-xl font-bold text-gray-900">{recipe.level}</p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-[360px_1fr] gap-8">
+          <section className="bg-white rounded-3xl shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-5">
+              Ingredients
+            </h2>
+
+            {recipe.ingredients.length > 0 ? (
+              <ul className="space-y-3">
+                {recipe.ingredients.map((ing, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-3 bg-orange-50 rounded-2xl px-4 py-3 text-gray-700"
+                  >
+                    <span className="w-7 h-7 rounded-full bg-orange-500 text-white flex items-center justify-center text-sm font-bold">
+                      {i + 1}
+                    </span>
+                    <span>{ing}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No ingredients available</p>
+            )}
+          </section>
+
+          <section className="bg-white rounded-3xl shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-5">
+              Instructions
+            </h2>
+
+            <div className="bg-[#fff8f0] rounded-2xl p-5 text-gray-700 leading-8 whitespace-pre-line">
+              {recipe.instructions}
+            </div>
+
+            {recipe.tags.length > 0 && (
+              <div className="flex flex-wrap gap-3 mt-6">
+                {recipe.tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-sm font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>

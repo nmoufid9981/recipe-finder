@@ -57,7 +57,7 @@ const FavoritesPage = () => {
               Start exploring and click the heart icon to add recipes to your favorites!
             </p>
             <a
-              href="/"
+              href="/home"
               className="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition"
             >
               Browse Recipes
