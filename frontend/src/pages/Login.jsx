@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) navigate("/home");
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

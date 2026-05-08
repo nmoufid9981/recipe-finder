@@ -2,12 +2,22 @@ package com.recipefinder.backend.service;
 
 import com.recipefinder.backend.model.User;
 import com.recipefinder.backend.repository.UserRepository;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@ToString
+@Setter
+@EqualsAndHashCode
+@Getter
 @Service
 @RequiredArgsConstructor
 public class UserService {

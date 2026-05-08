@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (!user) navigate("/");
-  }, []);
+  }, [navigate]);
 
   const handleSearch = async (list = ingredients) => {
     if (!list || list.length === 0) {
