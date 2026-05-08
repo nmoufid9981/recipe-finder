@@ -5,28 +5,24 @@ What2Cook est une application web full stack qui permet de trouver des idées de
 ⚙️ Stack
 Frontend : React + Tailwind CSS
 Backend : Spring Boot (REST API)
-DB : MySQL / PostgreSQL
+Database : MySQL / PostgreSQL
 Outils : Git, GitHub, Postman
 ✨ Fonctionnalités
 🔍 Recherche de recettes par ingrédients
 🍲 Liste des recettes
 📄 Détails d’une recette (ingrédients + étapes)
-⭐ Favoris utilisateur
-👤 Authentification (login/register)
+⭐ Gestion des favoris
+👤 Authentification (login / register)
 🧠 API principale
-GET /recipes
-GET /recipes/{id}
-GET /recipes/search?ingredients=
-POST /login
-POST /register
+GET    /recipes
+GET    /recipes/{id}
+GET    /recipes/search?ingredients=
+POST   /login
+POST   /register
 🚀 Lancer le projet
-
 Backend
-
 mvn spring-boot:run
-
 Frontend
-
 npm install
 npm run dev
 🎯 Objectif
